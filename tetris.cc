@@ -24,9 +24,21 @@ static bool no_green_rows(uint16_t board) {
         && (board & 0b11111'00000'00000) != 0b11111'00000'00000;
 }
 
+static bool strict(uint16_t board) {
+    for (int i = 5; i < 10; i++) {
+        if ( !(board & (1<<i)) && (board & (1<<(i+ 5))) ) { return false; }
+    }
+    for (int i = 0; i < 5; i++) {
+        if ( !(board & (1<<i)) && (board & (1<<(i+ 5))) ) { return false; }
+        if ( !(board & (1<<i)) && (board & (1<<(i+10))) ) { return false; }
+    }
+    return true;
+}
+
 static bool maybe_legal(uint16_t board) {
     return congruent_to_3_mod_4(board)  // 8255 possible boards with just this constraint
-        && no_green_rows(board);        // 7505 with this constraint too
+        && no_green_rows(board)         // 7505 with this constraint too
+        && strict(board);
 }
 
 int main(int argc, char *argv[]) {
