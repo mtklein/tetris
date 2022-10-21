@@ -42,13 +42,12 @@ static bool strict(uint16_t board) {
 
     // No black box on the second row underneath a green box on the top row.
     for (int i = 5; i < 10; i++) {
-        if (!is_green(board, i) && is_green(board, i+ 5)) { return false; }
+        if (!is_green(board, i) && is_green(board, i+5)) { return false; }
     }
 
-    // No black box on the third row underneath a green box on either of the top two rows.
+    // No black box on the third row underneath a green box on the second row.
     for (int i = 0; i < 5; i++) {
-        if (!is_green(board, i) && is_green(board, i+ 5)) { return false; }
-        if (!is_green(board, i) && is_green(board, i+10)) { return false; }  // TODO: not needed?
+        if (!is_green(board, i) && is_green(board, i+5)) { return false; }
     }
 
     return true;
