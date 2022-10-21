@@ -39,12 +39,8 @@ static bool congruent_to_3_mod_4(uint16_t board) {
 
 // In strict wordle, once a box is green, it stays green on subsequent rows.
 static bool strict(uint16_t board) {
-    // No black box on the second row underneath a green box on the top row.
-    for (int i = 5; i < 10; i++) {
-        if (!is_green(board, i) && is_green(board, i+5)) { return false; }
-    }
-    // No black box on the third row underneath a green box on the second row.
-    for (int i = 0; i < 5; i++) {
+    // No black box on the second or third row underneath a green box on the row above it.
+    for (int i = 0; i < 10; i++) {
         if (!is_green(board, i) && is_green(board, i+5)) { return false; }
     }
     return true;
