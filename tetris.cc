@@ -4,12 +4,15 @@
 // 4-row Wordle boards are represented by 15 bits in a uint16_t,
 //
 //    0b abcde'fghij'klmno
+//      14         5     0
 //
-// where abcde are the top row, left to right,
-// fghij the second row and klmno the third row.
+// where abcde (bits 14-10) are the top row, left to right,
+// fghij (bits 9-5) the second row and klmno (bits 4-0) the third row.
 //
 // A green box is represented by a 1 bit, black a 0 bit.
-//
+
+static bool is_green(uint16_t board, int i) { return board & (1<<i); }
+
 // The bottom fourth row is assumed to be all green, 11111.
 //
 // So for example, 0b00000'00010'00110 represents this board:
@@ -19,25 +22,21 @@
 //      ⬛⬛🟩🟩⬛
 //      🟩🟩🟩🟩🟩
 
-static bool is_green(uint16_t board, int i) {
-    return board & (1<<i);
-}
-
-// If we win on row 4, we can't have won on earlier rows.
+// In Wordle, if we win on row 4, we can't have won on earlier rows.
 static bool no_all_green_rows(uint16_t board) {
-    return (board & 0b00000'00000'11111) != 0b00000'00000'11111
-        && (board & 0b00000'11111'00000) != 0b00000'11111'00000
-        && (board & 0b11111'00000'00000) != 0b11111'00000'00000;
+    return (board & 0b00000'00000'11111) != 0b00000'00000'11111   // Not won on third row,
+        && (board & 0b00000'11111'00000) != 0b00000'11111'00000   // not won on second row,
+        && (board & 0b11111'00000'00000) != 0b11111'00000'00000;  // and not won on top row.
 }
 
-// To be tetrizable, the total number of green boxes must divide evenly by 4.
-// There are always 5 green boxes on row 4, so that means the other rows need 3, 7, or 11 greens.
-// (15 could work here too but that's ruled out by no_all_green_rows().)
+// To be tetrizable, the total number of green boxes must at least divide evenly by 4.
+// There are always 5 green boxes on row 4, so the other rows need to total 3, 7, or 11.
+// (15 could work here too but that'll be ruled out by no_all_green_rows().)
 static bool congruent_to_3_mod_4(uint16_t board) {
     return __builtin_popcount(board) % 4 == 3;
 }
 
-// In strict wordle, once a box is green, it stays green on subsequent rows.
+// In strict Wordle, once a box is green, it stays green on subsequent rows.
 static bool strict(uint16_t board) {
     // No black box on the second or third row underneath a green box on the row above it.
     for (int i = 0; i < 10; i++) {
