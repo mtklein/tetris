@@ -39,17 +39,14 @@ static bool congruent_to_3_mod_4(uint16_t board) {
 
 // In strict wordle, once a box is green, it stays green on subsequent rows.
 static bool strict(uint16_t board) {
-
     // No black box on the second row underneath a green box on the top row.
     for (int i = 5; i < 10; i++) {
         if (!is_green(board, i) && is_green(board, i+5)) { return false; }
     }
-
     // No black box on the third row underneath a green box on the second row.
     for (int i = 0; i < 5; i++) {
         if (!is_green(board, i) && is_green(board, i+5)) { return false; }
     }
-
     return true;
 }
 
@@ -69,7 +66,7 @@ static void print_board(uint16_t board) {
 }
 
 int main(void) {
-    // Run some simple tests on boards we want maybe_legal() to pass,
+    // Run some simple tests on boards we want maybe_legal() to pass...
     uint16_t const want_legal[] = {
         0b00000'00010'00110,
         0b00111'01111'01111,
@@ -80,7 +77,8 @@ int main(void) {
             return 1;
         }
     }
-    // then more tests on boards we want maybe_legal() to fail.
+
+    // ...then more tests on boards we want maybe_legal() to fail.
     uint16_t const want_not_legal[] = {
         0b00000'00000'00000,
         0b11111'11111'11111,
