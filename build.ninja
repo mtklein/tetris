@@ -1,0 +1,15 @@
+builddir = out
+
+cxx = clang++ -Weverything -Wno-poison-system-directories $
+              -Wno-c++98-compat -Wno-c++98-c++11-compat-binary-literal
+
+rule compile
+    command = $cxx -std=c++17 -Werror -Os -MD -MF $out.d -c $in -o $out
+    depfile = $out.d
+    deps    = gcc
+
+rule link
+    command = $cxx $in -o $out
+
+build out/tetris: link out/tetris.o
+build out/tetris.o: compile tetris.cc
